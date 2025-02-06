@@ -1,9 +1,10 @@
 import time
+import os
 from groq import Groq
 import streamlit as st
 
 st.set_page_config(page_title="Agri-partner", page_icon="logo.jpg")
-st.image(".streamlit/logo.jpg", width=200) #chatbot logo
+st.image(os.path.abspath("logo.jpg"), width=200) #chatbot logo
 
 # Groq API setup
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
