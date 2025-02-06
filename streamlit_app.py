@@ -3,8 +3,8 @@ import os
 from groq import Groq
 import streamlit as st
 
-st.set_page_config(page_title="Agri-partner", page_icon="logo.jpg")
-st.image(os.path.abspath("logo.jpg"), width=200) #chatbot logo
+st.set_page_config(page_title="-partner", page_icon="logo.jpg")
+st.image(os.path.abspath("logo.jpg"), width=200)  # Chatbot logo
 
 # Groq API setup
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
@@ -33,12 +33,10 @@ def get_response(chat_history):
         max_tokens=200,
         temperature=0.8 
     )
-    chat_response = response.choices[0].message.content
-    return chat_response
+    return response.choices[0].message.content
 
 # Personalized recommendation based on user input
 def personalized_recommendation(user_input):
-    """ Custom function to provide personalized recommendations based on user input """
     user_input = user_input.lower()
     if "corn" in user_input and "dry" in user_input:
         return "For corn in dry conditions, we recommend using soil moisture sensors to monitor irrigation needs."
@@ -49,7 +47,6 @@ def personalized_recommendation(user_input):
 
 # Troubleshooting common issues with IoT devices
 def troubleshoot_device(issue):
-    """ Troubleshooting for common issues """
     issue = issue.lower()
     if "wifi" in issue:
         return "Ensure your ESP32 device is within range of your router, or try resetting the device and checking the credentials."
@@ -62,20 +59,19 @@ def troubleshoot_device(issue):
 def main():
     st.title("IoT-Partner")
     
-    # Expanded description section
     with st.expander("About"):
         st.write("""
             This chatbot helps users with information, guidance, and troubleshooting for IoT systems in smart agriculture, such as temperature, humidity, and soil moisture sensors. 
-            It can assist with devices like ESP32 and Raspberry Pi.
+            It can assist with devices like ESP32 and Raspberry Pi. Inspired by a student going through all these herself.
         """)
     
     # Initialize session state to store the chat history
     if "messages" not in st.session_state:
-        st.session_state.messages = [system_prompt]  # Start with system message
+        st.session_state.messages = [system_prompt]  # Correctly store system message, but it won't be displayed
 
-    # Display chat history
+    # Display chat history (except system messages)
     for message in st.session_state.messages:
-        if message != system_prompt:
+        if message["role"] != "system":
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
@@ -83,7 +79,6 @@ def main():
     if prompt := st.chat_input("Ask me anything about IoT in agriculture!"):
         st.session_state.messages.append({"role": "user", "content": prompt})  # Add user message to history
 
-        # Display user input
         with st.chat_message("user"):
             st.markdown(prompt)
 
@@ -93,18 +88,20 @@ def main():
         elif "issue" in prompt or "problem" in prompt:
             response = troubleshoot_device(prompt)
         else:
-            # Get chatbot response via Groq API
             response = get_response(st.session_state.messages)
 
-        # Display the chatbot's response with word-by-word streaming (using Markdown for formatting)
+        # Display the chatbot's response with *proper* word-by-word streaming
         with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
+
             for word in response.split():
-                st.markdown(response, unsafe_allow_html=True)
+                full_response += word + " "  # Add words one by one
+                message_placeholder.markdown(full_response)  # Update chat with new words
+                time.sleep(0.05)  # Smooth effect
 
         # Append assistant response to history
         st.session_state.messages.append({"role": "assistant", "content": response})
 
 # Run the app
-if __name__ == "__main__":
-    main()
-
+if __name__ == "__main__":main()
