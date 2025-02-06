@@ -2,7 +2,7 @@ import time
 from groq import Groq
 import streamlit as st
 
-st.image("logo.png", width=200) #chatbot logo
+st.image("logo.jpg", width=200) #chatbot logo
 
 # Groq API setup
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
