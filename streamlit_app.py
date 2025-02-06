@@ -2,6 +2,8 @@ import time
 from groq import Groq
 import streamlit as st
 
+st.image("logo.png", width=200) #chatbot logo
+
 # Groq API setup
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 groq_client = Groq(api_key=GROQ_API_KEY)
@@ -95,8 +97,7 @@ def main():
         # Display the chatbot's response with word-by-word streaming (using Markdown for formatting)
         with st.chat_message("assistant"):
             for word in response.split():
-                st.markdown(word + " ", unsafe_allow_html=True)
-                time.sleep(0.05)  # Simulate word-by-word streaming
+                st.markdown(response, unsafe_allow_html=True)
 
         # Append assistant response to history
         st.session_state.messages.append({"role": "assistant", "content": response})
