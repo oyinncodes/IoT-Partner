@@ -3,7 +3,7 @@ import os
 from groq import Groq
 import streamlit as st
 
-st.set_page_config(page_title="-partner", page_icon="logo.jpg")
+st.set_page_config(page_title="IoT-partner", page_icon="logo.jpg")
 st.image(os.path.abspath("logo.jpg"), width=200)  # Chatbot logo
 
 # Groq API setup
